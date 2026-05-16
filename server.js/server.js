@@ -2,10 +2,18 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 app.use(express.json());
+
+const verifyPushLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 const OKTA_ORG_URL = (process.env.OKTA_ORG_URL || '').replace(/\/+$/, '');
 const OKTA_API_TOKEN = process.env.OKTA_API_TOKEN;
@@ -202,7 +210,7 @@ app.get('/okta-factors', async (req, res) => {
   }
 });
 
-app.post('/verify/push', async (req, res) => {
+app.post('/verify/push', verifyPushLimiter, async (req, res) => {
   const login = String(req.body.login || '').trim();
   const agent = req.headers['x-agent-id'] || 'unknown';
   const caseId = req.body.caseId || 'none';
