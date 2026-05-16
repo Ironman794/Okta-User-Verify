@@ -15,6 +15,13 @@ const verifyPushLimiter = rateLimit({
   legacyHeaders: false
 });
 
+const oktaLookupLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 const rootPageLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 60,
@@ -170,7 +177,7 @@ async function pollPushResult(pollLink, timeoutMs = 60000, pollIntervalMs = 3000
   return { status: 'timeout' };
 }
 
-app.get('/okta-user', async (req, res) => {
+app.get('/okta-user', oktaLookupLimiter, async (req, res) => {
   const login = String(req.query.login || '').trim();
   if (!login) {
     return res.status(400).json({ error: 'login query param is required' });
@@ -192,7 +199,7 @@ app.get('/okta-user', async (req, res) => {
   }
 });
 
-app.get('/okta-factors', async (req, res) => {
+app.get('/okta-factors', oktaLookupLimiter, async (req, res) => {
   const login = String(req.query.login || '').trim();
   if (!login) {
     return res.status(400).json({ error: 'login query param is required' });
