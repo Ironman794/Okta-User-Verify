@@ -455,7 +455,7 @@ app.post('/verify/push', verifyPushLimiter, asyncHandler(async (req, res) => {
     });
   } catch (err) {
     const code = err.code || 'UNKNOWN_ERROR';
-    console.error(`[${req.id}] Push verification error:`, err);
+    console.error('[%s] Push verification error:', req.id, err);
 
     if (code === 'USER_NOT_FOUND') {
       return res.status(404).json({ 
