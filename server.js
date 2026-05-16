@@ -159,7 +159,7 @@ async function findUserByLogin(login) {
     throw new Error('INVALID_LOGIN: Login must be a non-empty string');
   }
 
-  const search = `profile.login eq "${login.replace(/"/g, '\\"')}"`;
+  const search = `profile.login eq "${login.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
   const users = await oktaRequest(`/api/v1/users?search=${encodeURIComponent(search)}`);
 
   if (!Array.isArray(users) || users.length === 0) {
