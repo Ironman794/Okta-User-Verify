@@ -380,7 +380,7 @@ app.get('/okta-factors', oktaLookupLimiter, asyncHandler(async (req, res) => {
       requestId: req.id
     });
   } catch (err) {
-    console.error(`[${req.id}] Factors lookup error:`, err);
+    console.error('[%s] Factors lookup error:', req.id, err);
     res.status(500).json({ 
       error: 'Error retrieving factors', 
       details: err.message,
