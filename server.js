@@ -342,7 +342,7 @@ app.get('/okta-user', oktaLookupLimiter, asyncHandler(async (req, res) => {
       });
     }
     
-    console.error(`[${req.id}] User lookup error:`, err);
+    console.error('[%s] User lookup error:', req.id, err);
     res.status(500).json({ 
       error: 'Error looking up user', 
       details: err.message,
