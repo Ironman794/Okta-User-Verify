@@ -15,6 +15,13 @@ const verifyPushLimiter = rateLimit({
   legacyHeaders: false
 });
 
+const rootPageLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 const OKTA_ORG_URL = (process.env.OKTA_ORG_URL || '').replace(/\/+$/, '');
 const OKTA_API_TOKEN = process.env.OKTA_API_TOKEN;
 const PORT = process.env.PORT || 3000;
@@ -25,7 +32,7 @@ if (!OKTA_ORG_URL || !OKTA_API_TOKEN) {
   process.exit(1);
 }
 
-app.get('/', (req, res) => {
+app.get('/', rootPageLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, 'public.html'));
 });
 
